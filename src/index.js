@@ -2,6 +2,11 @@ import { h, render, Component } from "preact";
 import fetchAntInfo from "./fetchAntInfo";
 import generateAntWinLikelihoodCalculator from "./generateAntWinLikelihoodCalculator";
 
+const NOT_STARTED = "not-started";
+const STARTING = "starting";
+const FINISHED = "finished";
+
+// @TODO Handle user clicking on button multiple times
 class App extends Component {
     constructor(props) {
         super(props);
@@ -84,14 +89,48 @@ class App extends Component {
         }
     }
 
+    getAntOddsCalculatingState = () => {
+        const { ants } = this.state;
+
+        let status = NOT_STARTED;
+        let counter = 0;
+        ants.forEach(ant => {
+            if (ant.odds === "pending") {
+                status = STARTING;
+            } else if (typeof ant.odds === "number") {
+                counter++;
+            }
+        });
+
+        if (counter === ants.length) {
+            status = FINISHED;
+        }
+
+        return status;
+    }
+
+    renderTotalAntOddsCalculatingState = () => {
+        const antOddsCalculatingState = this.getAntOddsCalculatingState();
+        let antOddsCalculatingStateMarkup = "";
+
+        if (antOddsCalculatingState === NOT_STARTED) {
+            antOddsCalculatingStateMarkup = <p>Not started</p>
+        } else if (antOddsCalculatingState === STARTING) {
+            antOddsCalculatingStateMarkup = <p>Calculating odds</p>
+        } else if (antOddsCalculatingState === FINISHED) {
+            antOddsCalculatingStateMarkup = <p>Finished calculating odds</p>
+        }
+
+        return antOddsCalculatingStateMarkup;
+    }
+
     render() {
         return <div>
             <h1>Ant Goods</h1>
             <div style={{fontSize: 200}}>🐜</div>
             <button onClick={this.handleCalculateOddsClick}>Calculate odds</button>
-            <ul>
-                {this.renderAnts()}
-            </ul>
+            {this.renderTotalAntOddsCalculatingState()}
+            <ul>{this.renderAnts()}</ul>
         </div>
     }
 }
