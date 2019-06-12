@@ -1,5 +1,6 @@
 import { h, render, Component } from "preact";
 import fetchAntInfo from "./fetchAntInfo";
+import generateAntWinLikelihoodCalculator from "./generateAntWinLikelihoodCalculator";
 
 class App extends Component {
     constructor(props) {
@@ -29,6 +30,36 @@ class App extends Component {
     }
 
     handleCalculateOddsClick = () => {
+        const { ants } = this.state;
+
+        if (ants.length === 0) return;
+
+        const newAnts = ants.map(ant => {
+            const updatedAnt = {
+                ...ant,
+                odds: "pending"
+            };
+
+            generateAntWinLikelihoodCalculator()(this.updateAntOdds(updatedAnt));
+
+            return updatedAnt;
+        });
+
+        this.setState({ ants: newAnts });
+    }
+
+    updateAntOdds = ant => odds => {
+        const newAnts = this.state.ants.map(currentAnt => {
+            if (ant.name === currentAnt.name) {
+                return {
+                    ...currentAnt,
+                    odds
+                };
+            }
+            return currentAnt;
+        });
+
+        this.setState({ ants: newAnts });
     }
 
     renderAnts = () => {
