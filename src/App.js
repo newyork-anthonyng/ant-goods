@@ -3,6 +3,8 @@ import fetchAntInfo from "./fetchAntInfo";
 import generateAntWinLikelihoodCalculator from "./generateAntWinLikelihoodCalculator";
 import Header from "./Header";
 import Ant from "./Ant";
+import AntButton from "./AntButton";
+
 
 const NOT_STARTED = "not-started";
 const STARTING = "starting";
@@ -114,30 +116,48 @@ class App extends Component {
 
     renderTotalAntOddsCalculatingState = () => {
         const antOddsCalculatingState = this.getAntOddsCalculatingState();
-        let antOddsCalculatingStateMarkup = "";
+        let text = "";
 
         if (antOddsCalculatingState === NOT_STARTED) {
-            antOddsCalculatingStateMarkup = <p>Not started</p>
+            text = "Not started";
         } else if (antOddsCalculatingState === STARTING) {
-            antOddsCalculatingStateMarkup = <p>Calculating odds</p>
+            text = "Calculating odds";
         } else if (antOddsCalculatingState === FINISHED) {
-            antOddsCalculatingStateMarkup = <p>Finished calculating odds</p>
+            text = "Finished calculating odds";
         }
 
-        return antOddsCalculatingStateMarkup;
+        return <marquee style={statusStyle}>{text}</marquee>
     }
 
     render() {
-        return <div>
-            <Header />
+        return <div style={outerContainerStyle}>
+            <div style={innerContainerStyle}>
+                <Header />
 
-            <button onClick={this.handleCalculateOddsClick}>Calculate odds</button>
+                <AntButton onClick={this.handleCalculateOddsClick}>Calculate odds</AntButton>
 
-            {this.renderTotalAntOddsCalculatingState()}
+                {this.renderTotalAntOddsCalculatingState()}
 
-            <ul>{this.renderAnts()}</ul>
+                <ul>{this.renderAnts()}</ul>
+            </div>
         </div>
     }
 }
+
+const outerContainerStyle = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column"
+};
+const innerContainerStyle = {
+    maxWidth: 500,
+    width: "100%"
+};
+const statusStyle = {
+    margin: "20px 0",
+    fontSize: 30,
+    fontFamily: "Helvetica, sans-serif"
+};
 
 export default App;
