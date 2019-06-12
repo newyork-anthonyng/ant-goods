@@ -107,7 +107,8 @@ class App extends Component {
             }
         });
 
-        if (counter === ants.length) {
+        const areAllAntsLoaded = ants.length !== 0 && counter === ants.length;
+        if (areAllAntsLoaded) {
             status = FINISHED;
         }
 
