@@ -64,7 +64,16 @@ class App extends Component {
             return currentAnt;
         });
 
+        newAnts.sort((a, b) => {
+            // Sort from highest to lowest
+            return (b.odds || 0) - (a.odds || 0);
+        });
+
         this.setState({ ants: newAnts });
+    }
+
+    formatAntOdds = odds => {
+        return (odds * 100).toFixed(2);
     }
 
     renderAnts = () => {
@@ -74,7 +83,7 @@ class App extends Component {
                 <p>Weight: {ant.weight}</p>
                 <p>Length: {ant.length}</p>
                 <div style={{ borderRadius: "50%", height: 50, width: 50, backgroundColor: ant.color}}></div>
-                {this.renderAntOdds(ant)}
+                <span style={{ fontSize: 100 }}>{this.renderAntOdds(ant)}</span>
             </li>
         });
     }
@@ -85,7 +94,7 @@ class App extends Component {
         } else if (ant.odds === "pending") {
             return "calculating odds...";
         } else {
-            return ant.odds;
+            return `${this.formatAntOdds(ant.odds)}%`;
         }
     }
 
